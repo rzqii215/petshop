@@ -1,0 +1,86 @@
+# ==========================================
+# 1. DEPENDENCIES & PACKAGE MANAGERS
+# ==========================================
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+.pnpm-store/
+
+# ==========================================
+# 2. ENVIRONMENT VARIABLES (SANGAT RAHASIA)
+# ==========================================
+# Abaikan semua file .env, KECUALI .env.example
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+!.env.example
+
+# ==========================================
+# 3. NEXT.JS BUILD & CACHE
+# ==========================================
+/.next/
+/out/
+/build
+.vercel
+.turbo
+*.tsbuildinfo
+next-env.d.ts
+
+# ==========================================
+# 4. TESTING (PLAYWRIGHT & VITEST)
+# ==========================================
+/coverage
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.cache/
+.nyc_output
+
+# ==========================================
+# 5. PRISMA & DATABASE (LOKAL)
+# ==========================================
+# Mengabaikan file database SQLite lokal jika ada
+*.db
+*.db-journal
+# Mengabaikan folder volume Docker (jika Anda menggunakan bind mount lokal)
+postgres_data/
+
+# ==========================================
+# 6. AI AGENT & TOOLS (HERMES, CURSOR, DLL)
+# ==========================================
+.hermes/
+.agents/
+.claude/
+.cursor/
+.devin/
+*.txt.tmp
+
+# ==========================================
+# 7. LOGS & DEBUGGING
+# ==========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# ==========================================
+# 8. OS & EDITOR SPECIFIC
+# ==========================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ==========================================
+# 9. DOCKER & PRODUCTION MISC
+# ==========================================
+*.pem
+Dockerfile.dev
+docker-compose.dev.yml

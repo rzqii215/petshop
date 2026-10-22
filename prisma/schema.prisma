@@ -1,0 +1,231 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // URL di bawah ini diambil dari terminal `npx prisma dev` Anda. 
+  // Jika port-nya berubah (misal bukan 51214), ganti angka 51214 tersebut.
+  url      = "postgres://postgres:postgres@localhost:5432/petshop?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0"
+}
+
+enum Role {
+  customer
+  admin
+  doctor
+  owner
+}
+
+enum AppointmentType {
+  clinic
+  grooming
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+  no_show
+}
+
+enum BoardingStatus {
+  pending
+  confirmed
+  checked_in
+  checked_out
+  cancelled
+}
+
+enum ReminderStatus {
+  pending
+  processing
+  sent
+  failed
+  cancelled
+}
+
+enum ReminderKind {
+  appointment
+  boarding
+  follow_up
+}
+
+enum FileKind {
+  medical_image
+  medical_pdf
+  pet_photo
+  product_photo
+}
+
+model SiteSetting {
+  key         String      @id
+  value       Json
+  type        String
+  group       String
+  label       String
+  description String?
+  isPublic    Boolean     @default(false)
+  updatedAt   DateTime    @updatedAt
+  updatedById String?
+}
+
+model Location {
+  id        String  @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  whatsapp  String
+  timezone  String  @default("Asia/Jakarta")
+  isDefault Boolean @default(false)
+  isActive  Boolean @default(true)
+}
+
+model BookingPolicy {
+  id                   String          @id @default(cuid())
+  type                 AppointmentType
+  holdMinutes          Int
+  cancelWindowHours    Int
+  noShowPenaltyIdr     Int             @default(0)
+  requiresConfirmation Boolean         @default(true)
+  @@unique([type])
+}
+
+model ReminderPolicy {
+  id             String         @id @default(cuid())
+  kind           ReminderKind
+  offsetHours    Int
+  channel        String         @default("email")
+  maxAttempts    Int            @default(3)
+  backoffMinutes Int[]          @default([5, 30, 120])
+  isActive       Boolean        @default(true)
+}
+
+model AccessPolicy {
+  id              String  @id @default(cuid())
+  role            Role
+  resource        String
+  canRead         Boolean
+  canWrite        Boolean
+  requiresConsent Boolean @default(false)
+  @@unique([role, resource])
+}
+
+model FormFieldConfig {
+  id         String  @id @default(cuid())
+  entity     String
+  field      String
+  label      String
+  isRequired Boolean @default(false)
+  isVisible  Boolean @default(true)
+  order      Int     @default(0)
+  validation Json?
+  @@unique([entity, field])
+}
+
+model FeatureFlag {
+  key         String   @id
+  enabled     Boolean  @default(false)
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String?
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  role          Role     @default(customer)
+  phone         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  pets          Pet[]
+  sessions      Session[]
+  accounts      Account[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String   @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model Pet {
+  id          String   @id @default(cuid())
+  ownerId     String
+  name        String
+  species     String
+  breed       String?
+  birthDate   DateTime?
+  sex         String   @default("unknown")
+  weightGrams Int?
+  allergies   String?
+  notes       String?
+  photoKey    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+model Service {
+  id              String          @id @default(cuid())
+  locationId      String?
+  type            AppointmentType
+  name            String
+  durationMinutes Int
+  bufferMinutes   Int             @default(0)
+  slotIntervalMin Int             @default(15)
+  priceIdr        Int
+  isActive        Boolean         @default(true)
+}

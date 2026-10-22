@@ -1,0 +1,50 @@
+{
+  "$schema": "./config-defaults.schema.json",
+  "version": 1,
+  "updatedAt": "2026-10-20",
+  "siteSettings": [
+    { "key": "site.name",              "value": "Petshop Sehat",          "type": "string",  "group": "identity",  "label": "Nama Petshop",        "isPublic": true  },
+    { "key": "site.logoUrl",           "value": "/placeholder-logo.svg",  "type": "string",  "group": "identity",  "label": "URL Logo",            "isPublic": true  },
+    { "key": "site.address",           "value": "Jakarta",                "type": "string",  "group": "identity",  "label": "Alamat",              "isPublic": true  },
+    { "key": "site.whatsapp",          "value": "62812xxxxxxx",           "type": "string",  "group": "identity",  "label": "Nomor WhatsApp",      "isPublic": true  },
+    { "key": "site.timezone",          "value": "Asia/Jakarta",           "type": "string",  "group": "identity",  "label": "Timezone",            "isPublic": true  },
+    { "key": "site.domain",            "value": "localhost:3000",         "type": "string",  "group": "identity",  "label": "Domain Publik",       "isPublic": true  },
+    { "key": "tax.rate",               "value": 0.10,                     "type": "number",  "group": "tax",       "label": "Tarif Pajak (PB1)",   "isPublic": true  },
+    { "key": "retention.medicalYears", "value": 5,                        "type": "number",  "group": "retention", "label": "Retensi Aktif (tahun)", "isPublic": false },
+    { "key": "retention.archiveYears", "value": 10,                       "type": "number",  "group": "retention", "label": "Retensi Arsip (tahun)", "isPublic": false },
+    { "key": "file.maxPerRecord",      "value": 20,                       "type": "number",  "group": "retention", "label": "Maks File per Record", "isPublic": false },
+    { "key": "file.maxTotalMB",        "value": 100,                      "type": "number",  "group": "retention", "label": "Maks Total MB per Record", "isPublic": false },
+    { "key": "email.from",             "value": "noreply@petshop.example", "type": "string", "group": "email",     "label": "Email Pengirim",      "isPublic": false },
+    { "key": "email.requireVerify",    "value": true,                     "type": "boolean", "group": "email",     "label": "Wajib Verifikasi Email", "isPublic": false }
+  ],
+  "bookingPolicies": [
+    { "type": "clinic",   "holdMinutes": 30, "cancelWindowHours": 24, "noShowPenaltyIdr": 0, "requiresConfirmation": true },
+    { "type": "grooming", "holdMinutes": 30, "cancelWindowHours": 24, "noShowPenaltyIdr": 0, "requiresConfirmation": true }
+  ],
+  "reminderPolicies": [
+    { "kind": "appointment", "offsetHours": 24, "channel": "email", "maxAttempts": 3, "backoffMinutes": [5, 30, 120], "isActive": true },
+    { "kind": "boarding",    "offsetHours": 24, "channel": "email", "maxAttempts": 3, "backoffMinutes": [5, 30, 120], "isActive": true }
+  ],
+  "featureFlags": [
+    { "key": "MULTI_LOCATION", "enabled": false, "description": "Aktifkan multi-cabang" },
+    { "key": "REMINDER_H3",    "enabled": false, "description": "Reminder H-3 untuk boarding" },
+    { "key": "DEPOSIT",        "enabled": false, "description": "Deposit booking boarding" }
+  ],
+  "accessPolicies": [
+    { "role": "owner",  "resource": "medical_record.summary", "canRead": true,  "canWrite": false, "requiresConsent": false },
+    { "role": "owner",  "resource": "medical_record.full",    "canRead": false, "canWrite": false, "requiresConsent": false },
+    { "role": "admin",  "resource": "medical_record.meta",    "canRead": true,  "canWrite": false, "requiresConsent": false },
+    { "role": "admin",  "resource": "medical_record.full",    "canRead": false, "canWrite": false, "requiresConsent": false },
+    { "role": "doctor", "resource": "medical_record.full",    "canRead": true,  "canWrite": true,  "requiresConsent": false }
+  ],
+  "formFieldConfigs": [
+    { "entity": "pet", "field": "name",        "label": "Nama",          "isRequired": true,  "isVisible": true, "order": 1, "validation": { "maxLength": 60 } },
+    { "entity": "pet", "field": "species",     "label": "Spesies",       "isRequired": true,  "isVisible": true, "order": 2, "validation": { "maxLength": 40 } },
+    { "entity": "pet", "field": "breed",       "label": "Ras",           "isRequired": false, "isVisible": true, "order": 3, "validation": { "maxLength": 60 } },
+    { "entity": "pet", "field": "birthDate",   "label": "Tanggal Lahir", "isRequired": false, "isVisible": true, "order": 4, "validation": null },
+    { "entity": "pet", "field": "weightGrams", "label": "Berat (kg)",    "isRequired": false, "isVisible": true, "order": 5, "validation": { "min": 0, "max": 200000 } },
+    { "entity": "pet", "field": "photoKey",    "label": "Foto",          "isRequired": false, "isVisible": true, "order": 6, "validation": null },
+    { "entity": "pet", "field": "allergies",   "label": "Alergi",        "isRequired": false, "isVisible": true, "order": 7, "validation": { "maxLength": 500 } },
+    { "entity": "pet", "field": "notes",       "label": "Catatan",       "isRequired": false, "isVisible": true, "order": 8, "validation": { "maxLength": 1000 } }
+  ]
+}
